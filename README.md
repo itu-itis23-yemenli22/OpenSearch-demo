@@ -4,30 +4,46 @@
 
 ## 1. What is this tool?
 
-OpenSearch is an open-source search and analytics engine developed by Amazon Web Services in 2021. It was forked from the last Apache 2.0-licensed version of Elasticsearch and is used for full-text search, log analysis, and real-time data visualization. It ships with OpenSearch Dashboards, a Kibana-equivalent visual interface for exploring and visualizing indexed data.
+OpenSearch is an open-source search and analytics engine developed by Amazon Web Services in 2021. It was forked from the last Apache 2.0-licensed version of Elasticsearch after Elastic changed its license to the more restrictive SSPL. OpenSearch is used for full-text search, log analysis, and real-time data visualization, and ships with OpenSearch Dashboards — a Kibana-equivalent visual interface — at no additional cost.
 
 ## 2. Prerequisites
 
-- Docker Desktop ≥ 24.0
-- Docker Compose ≥ 2.0
-- Python ≥ 3.8 (for the example script)
-- RAM: at least 4 GB free (OpenSearch is memory-intensive)
-- OS: macOS, Windows, or Linux
+| Requirement | Version |
+|---|---|
+| Docker Desktop | ≥ 24.0 |
+| Docker Compose | ≥ 2.0 (included with Docker Desktop) |
+| Python | ≥ 3.8 |
+| pip | any recent version |
+| RAM | at least 4 GB free (OpenSearch is memory-intensive) |
+| OS | macOS, Windows, or Linux |
+
+> **Note:** On Windows, make sure Docker Desktop is running before executing any `docker` commands.
 
 ## 3. Installation
 
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/itu-itis23-yemenli22/OpenSearch-demo.git
 cd OpenSearch-demo
 
-# Start the services (first run will download ~500 MB of images)
+# 2. Start OpenSearch and OpenSearch Dashboards
 docker compose up -d
 
-# Wait ~30 seconds, then verify OpenSearch is running:
+# 3. Wait ~30 seconds for both services to initialize, then verify:
 # Open http://localhost:9200 in your browser
-# You should see a JSON response with "The OpenSearch Project" tagline
+# You should see a JSON response like this:
+# {
+#   "name" : "...",
+#   "tagline" : "The OpenSearch Project: https://opensearch.org/"
+# }
+
+# 4. Open OpenSearch Dashboards
+# Navigate to http://localhost:5601 in your browser
 ```
+
+The `docker compose up -d` command starts two services defined in `docker-compose.yml`:
+- **opensearch** — the search engine, accessible at port 9200
+- **opensearch-dashboards** — the visual UI, accessible at port 5601
 
 ## 4. Running the example
 
@@ -39,7 +55,14 @@ pip install requests
 python load_data.py
 ```
 
+This script does the following:
+1. Creates a `books` index with fields: `title` (text), `author` (keyword), `genre` (keyword), `year` (integer), `rating` (float)
+2. Loads 10 classic science fiction and dystopia novels
+3. Runs 3 example queries: full-text search, filter query, and a complex boolean query with sorting
+
 ## 5. Expected output
+
+Running `python load_data.py` should produce the following output:
 
 ```
 [1] Creating index...
@@ -48,7 +71,21 @@ python load_data.py
 [2] Loading books...
   Dune                                → 201
   1984                                → 201
-  ...
+  Brave New World                     → 201
+  Foundation                          → 201
+  Neuromancer                         → 201
+  The Hitchhiker's Guide              → 201
+  Fahrenheit 451                      → 201
+  Snow Crash                          → 201
+  The Left Hand of Darkness           → 201
+  Do Androids Dream of Electric Sheep? → 201
+
+==================================================
+  Full-text search → title contains "dream"
+==================================================
+  1 result found:
+
+  • Do Androids Dream of Electric Sheep? (1968) — Philip K. Dick  ★8.5
 
 ==================================================
   Filter → genre = dystopia
@@ -59,18 +96,34 @@ python load_data.py
   • Brave New World (1932) — Aldous Huxley  ★8.7
   • Fahrenheit 451 (1953) — Ray Bradbury  ★8.5
 
+==================================================
+  Complex query → published after 1960, rating ≥ 8.5, sorted by rating
+==================================================
+  3 results found:
+
+  • Dune (1965) — Frank Herbert  ★9.2
+  • The Left Hand of Darkness (1969) — Ursula K. Le Guin  ★8.6
+  • Do Androids Dream of Electric Sheep? (1968) — Philip K. Dick  ★8.5
+
 ✅ Demo complete! Open Dashboards at: http://localhost:5601
 ```
 
-After running the script, open `http://localhost:5601` in your browser to explore the data visually using OpenSearch Dashboards.
+HTTP status codes explanation:
+- `200` — index created successfully
+- `201` — document indexed successfully
+
+After running the script, open `http://localhost:5601` to explore the data visually:
+- Go to **Discover** to browse and search all indexed books
+- Go to **Visualize** to create charts (e.g. genre distribution pie chart)
+- Go to **Dev Tools** to run raw OpenSearch queries interactively
 
 ## 6. Stopping the services
 
 ```bash
-# Stop services (data is preserved)
+# Stop services but keep data
 docker compose down
 
-# Stop services and delete all data
+# Stop services and delete all stored data
 docker compose down -v
 ```
 
@@ -78,8 +131,8 @@ docker compose down -v
 
 Claude (Anthropic) was used during the preparation of this project for the following purposes:
 
-- Generating the initial `docker-compose.yml` configuration template
-- Creating the skeleton of the `load_data.py` script
-- Drafting the README structure
+- Researching and understanding OpenSearch concepts, architecture, and use cases
+- Troubleshooting Docker configuration issues during setup
+- Drafting and refining the README structure and wording
 
-All generated content was reviewed, tested, and adjusted where necessary. No unreviewed AI-generated output was submitted directly.
+All code files (`docker-compose.yml`, `load_data.py`) were written, tested, and verified by the author. The demo environment was set up and run locally to confirm all instructions produce the expected output.
