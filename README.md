@@ -129,10 +129,10 @@ docker compose down -v
 
 ## 7. AI usage disclosure
 
-Claude (Anthropic) was used during the preparation of this project for the following purposes:
+Claude was used during the preparation of this project for the following purposes:
 
 - Researching and understanding OpenSearch concepts, architecture, and use cases
 - Troubleshooting Docker configuration issues during setup
 - Drafting and refining the README structure and wording
 
-All code files (`docker-compose.yml`, `load_data.py`) were written, tested, and verified by the author. The demo environment was set up and run locally to confirm all instructions produce the expected output.
+All code files were written, tested, and verified by the author. The demo environment was set up and run locally to confirm all instructions produce the expected output.
