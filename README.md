@@ -1,91 +1,85 @@
 # OpenSearch Demo — YZV 322E
 
-> AWS'nin açık kaynak arama ve analitik motoru — Elasticsearch'ün özgür fork'u.
+> AWS's open-source search and analytics engine — the free fork of Elasticsearch.
 
-## 1. Bu araç nedir?
+## 1. What is this tool?
 
-OpenSearch, Amazon Web Services tarafından 2021 yılında geliştirilen açık kaynaklı bir arama ve analitik motorudur. Elasticsearch'ün Apache 2.0 lisanslı son sürümünden türetilmiş olup tam metin arama, log analizi ve gerçek zamanlı veri görselleştirme için kullanılır. OpenSearch Dashboards aracılığıyla Kibana'ya eşdeğer bir görsel arayüz sunar.
+OpenSearch is an open-source search and analytics engine developed by Amazon Web Services in 2021. It was forked from the last Apache 2.0-licensed version of Elasticsearch and is used for full-text search, log analysis, and real-time data visualization. It ships with OpenSearch Dashboards, a Kibana-equivalent visual interface for exploring and visualizing indexed data.
 
-## 2. Gereksinimler
+## 2. Prerequisites
 
 - Docker Desktop ≥ 24.0
 - Docker Compose ≥ 2.0
-- Python ≥ 3.8 (örnek script için)
-- RAM: en az 4 GB boş bellek (OpenSearch bellek yoğun)
-- İşletim sistemi: macOS, Windows, Linux
+- Python ≥ 3.8 (for the example script)
+- RAM: at least 4 GB free (OpenSearch is memory-intensive)
+- OS: macOS, Windows, or Linux
 
-## 3. Kurulum
+## 3. Installation
 
 ```bash
-# Repoyu klonla
-git clone https://github.com/KULLANICI_ADIN/opensearch-demo.git
-cd opensearch-demo
+# Clone the repository
+git clone https://github.com/itu-itis23-yemenli22/OpenSearch-demo.git
+cd OpenSearch-demo
 
-# Servisleri başlat (ilk indirmede birkaç dakika sürer)
+# Start the services (first run will download ~500 MB of images)
 docker compose up -d
 
-# Servislerin hazır olmasını bekle (~30 saniye)
-# Hazır olduğunu kontrol et:
-curl http://localhost:9200 -u admin:Admin@1234!
+# Wait ~30 seconds, then verify OpenSearch is running:
+# Open http://localhost:9200 in your browser
+# You should see a JSON response with "The OpenSearch Project" tagline
 ```
 
-Beklenen çıktı (kısaltılmış):
-```json
-{
-  "name" : "opensearch",
-  "cluster_name" : "docker-cluster",
-  "version" : { "number" : "2.13.0", ... }
-}
-```
-
-## 4. Örneği çalıştır
+## 4. Running the example
 
 ```bash
-# Bağımlılıkları yükle
+# Install the required Python library
 pip install requests
 
-# Veri yükle ve sorguları çalıştır
+# Load sample data and run example queries
 python load_data.py
 ```
 
-## 5. Beklenen çıktı
+## 5. Expected output
 
 ```
-[1] Index oluşturuluyor...
-  Durum: 200 — True
+[1] Creating index...
+  Status: 200 — True
 
-[2] Kitaplar yükleniyor...
+[2] Loading books...
   Dune                                → 201
   1984                                → 201
   ...
 
 ==================================================
-  Filtre → genre = dystopia
+  Filter → genre = dystopia
 ==================================================
-  3 sonuç bulundu:
+  3 results found:
 
   • 1984 (1949) — George Orwell  ★9.0
   • Brave New World (1932) — Aldous Huxley  ★8.7
   • Fahrenheit 451 (1953) — Ray Bradbury  ★8.5
 
-✅ Demo tamamlandı! Dashboards için: http://localhost:5601
+✅ Demo complete! Open Dashboards at: http://localhost:5601
 ```
 
-Tarayıcıda `http://localhost:5601` adresini aç → görsel dashboard arayüzüne ulaşırsın.
+After running the script, open `http://localhost:5601` in your browser to explore the data visually using OpenSearch Dashboards.
 
-## 6. Servisleri durdur
+## 6. Stopping the services
 
 ```bash
-docker compose down          # servisleri durdur (veri korunur)
-docker compose down -v       # servisleri durdur + veriyi sil
+# Stop services (data is preserved)
+docker compose down
+
+# Stop services and delete all data
+docker compose down -v
 ```
 
-## 7. AI kullanım beyanı
+## 7. AI usage disclosure
 
-Bu proje hazırlanırken Claude (Anthropic) aşağıdaki amaçlarla kullanılmıştır:
+Claude (Anthropic) was used during the preparation of this project for the following purposes:
 
-- `docker-compose.yml` yapılandırması için başlangıç şablonu oluşturma
-- `load_data.py` script iskeletinin hazırlanması
-- README taslağının oluşturulması
+- Generating the initial `docker-compose.yml` configuration template
+- Creating the skeleton of the `load_data.py` script
+- Drafting the README structure
 
-Tüm içerik incelenerek, test edilerek ve gerekli yerlerde düzenlenerek kullanılmıştır. Gözden geçirilmemiş AI çıktısı doğrudan teslim edilmemiştir.
+All generated content was reviewed, tested, and adjusted where necessary. No unreviewed AI-generated output was submitted directly.
